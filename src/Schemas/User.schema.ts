@@ -1,7 +1,8 @@
-// import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-// import { Document, Types } from 'mongoose';
 
-// @Schema({ timestamps: true })
+// import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+// import { Document } from 'mongoose';
+
+// @Schema()
 // export class User extends Document {
 //   @Prop({ required: true })
 //   username: string;
@@ -10,10 +11,7 @@
 //   email: string;
 
 //   @Prop({ required: true })
-//   password_hash: string;
-
-//   @Prop({ type: [{ type: Types.ObjectId, ref: 'Cart' }] })
-//   carts: Types.ObjectId[];
+//   password_hash: string;  
 // }
 
 // export const UserSchema = SchemaFactory.createForClass(User);
@@ -21,6 +19,7 @@
 // src/schemas/user.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 @Schema()
 export class User extends Document {
@@ -31,8 +30,13 @@ export class User extends Document {
   email: string;
 
   @Prop({ required: true })
-  password_hash: string;  // Make sure this matches with your DTO
+  password_hash: string;
+
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password_hash);
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
 
